@@ -40,9 +40,9 @@ class JwtAuthenticateController extends Controller
         return response()->json("created");
     }
     public function createPermission(Request $request){
-        $viewUsers = new Permission();
-        $viewUsers->name = $request->input('name');
-        $viewUsers->save();
+        $permission = new Permission();
+        $permission->name = $request->input('name');
+        $permission->save();
         return response()->json("created");
     }
     public function assignRole(Request $request){
