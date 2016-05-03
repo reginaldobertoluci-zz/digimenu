@@ -55,3 +55,9 @@ Route::group(['prefix' => 'api', 'middleware' => ['ability:admin,create-users']]
 
 // Authentication route
 Route::post('authenticate', 'JwtAuthenticateController@authenticate');
+
+Route::get('venues', 'VenueController@index');
+Route::get('venue/{id}', 'VenueController@getOne');
+Route::get('menus', 'MenuController@index');
+Route::get('menu/{id}', 'MenuController@getOne');
+

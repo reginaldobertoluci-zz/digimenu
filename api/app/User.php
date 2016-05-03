@@ -31,4 +31,14 @@ class User extends Model implements AuthenticatableContract,
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
+
+    /**
+     * Get the venues for the user
+     */
+    public function venues()
+    {
+        return $this->belongsToMany('App\Venue', 'venue_user');
+    }
+
+    
 }
