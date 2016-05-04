@@ -26,6 +26,7 @@ class MenuController extends Controller
               'name' => 'required|max:255'
         ]);
        
+       
         if($v->passes()){
             //try {
                 //Verifica se o usuário tem permissão para acessar este estabelecimento
