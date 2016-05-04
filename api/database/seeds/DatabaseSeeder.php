@@ -7,7 +7,7 @@ use App\Role;
 use App\Permission;
 use App\Venue;
 use App\Menu;
-use App\Category;
+use App\Section;
 use App\Item;
 
 class DatabaseSeeder extends Seeder
@@ -26,7 +26,8 @@ class DatabaseSeeder extends Seeder
         DB::table('roles')->truncate();
 
         $roles = array(
-            ['name' => 'admin', 'display_name' => 'Administrador', 'description' => 'Administrador Global do Sistema'],
+            ['name' => 'owner', 'display_name' => 'Owner', 'description' => 'Administrador Global do Sistema'],
+            ['name' => 'admin', 'display_name' => 'Administrador', 'description' => 'Administrador do Sistema'],
             ['name' => 'venue_owner', 'display_name' => 'Proprietário', 'description' => 'Proprietário de Estabelecimento'],
             ['name' => 'user', 'display_name' => 'Usuário', 'description' => 'Usuário do sistema']
 
@@ -75,6 +76,7 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->truncate();
 
         $users = array(
+            ['name' => 'Owner', 'email' => 'owner@digimenu', 'password' => Hash::make('owner')],
             ['name' => 'Administrador', 'email' => 'admin@digimenu', 'password' => Hash::make('admin')],
             ['name' => 'Proprietário', 'email' => 'proprietario@digimenu', 'password' => Hash::make('proprietario')],
             ['name' => 'Usuário', 'email' => 'usuario@digimenu', 'password' => Hash::make('usuario')]
@@ -141,45 +143,39 @@ class DatabaseSeeder extends Seeder
 
         }
 
-        // Cria categorias de exemplo
-        DB::table('categories')->truncate();
-        $categories = array(
-        	['name' => 'Categoria de teste', 'venue' => 'Estabelecimento Teste']
+        // Cria seções de exemplo
+        DB::table('sections')->truncate();
+        $sections = array(
+        	['name' => 'Seção de teste 1', 'order' => 1, 'menu' => 'Menu de teste'],
+            ['name' => 'Seção de teste 2', 'order' => 1, 'menu' => 'Menu de teste'],
         );
 
-        foreach ($categories as $category) {
-        	$venue = Venue::where('name', '=', $category['venue'])->first();
-        	$category = Category::create(array('name'=>$category['name']));
-        	$category->venue()->associate($venue);
-			$category->save();
+        foreach ($sections as $section) {
+        	$menu = Menu::where('name', '=', $section['menu'])->first();
+        	$section = Section::create(array('name'=>$section['name'], 'order' => $section['order']));
+        	$section->menu()->associate($menu);
+			$section->save();
 
         }
 
-        // Cria categorias disponíveis em um menu
-        DB::table('menu_category')->truncate();
-        $categories = array(
-        	['name' => 'Categoria de teste', 'venue' => 'Estabelecimento Teste', 'menu' => 'Menu de teste']
-        );
-
-        foreach ($categories as $category) {
-        	$menu = Menu::where('name', '=', $category['menu'])->first();
-        	$category = Category::where('name', '=', $category['name'])->first();
-        	$menu->categories()->save($category);
-        }
-
-        // Adiciona itens em um menu
-        DB::table('menu_item')->truncate();
+        // Adiciona itens em uma seção
+        DB::table('menu_items')->truncate();
         $items = array(
-        	['name' => 'Item de teste', 'price'=>10, 'category'=>'Categoria de teste', 'menu' => 'Menu de teste']
+        	['name' => 'Item de teste', 'price'=>10, 'section'=>'Seção de teste 1'],
+            ['name' => 'Item de teste 2', 'price'=>11, 'section'=>'Seção de teste 1'],
+            ['name' => 'Item de teste 3', 'price'=>12, 'section'=>'Seção de teste 1'],
+            ['name' => 'Item de teste', 'price'=>13, 'section'=>'Seção de teste 2'],
+            ['name' => 'Item de teste 2', 'price'=>14, 'section'=>'Seção de teste 2'],
+
+
+
         );
 
         foreach ($items as $item) {
-        	$menu = Menu::where('name', '=', $item['menu'])->first();
-        	$category = Category::where('name', '=', $item['category'])->first();
+        	$section = Section::where('name', '=', $item['section'])->first();
         	
 			$item = Item::create(array('name'=>$item['name'], 'price' => $item['price']));
-        	$item->menu()->associate($menu);
-        	$item->category()->associate($category);
+        	$item->section()->associate($section);
 			$item->save();
 
         }

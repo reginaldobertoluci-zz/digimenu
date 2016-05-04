@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMenuCategoryTable extends Migration
+class CreateSectionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,14 +12,15 @@ class CreateMenuCategoryTable extends Migration
      */
     public function up()
     {
-        Schema::create('menu_category', function (Blueprint $table) {
+         Schema::create('sections', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name');
+            $table->string('description');
+            $table->string('picture');
+            $table->integer('order')->unsigned();
             $table->integer('menu_id')->unsigned();
-            $table->integer('category_id')->unsigned();
             $table->foreign('menu_id')->references('id')->on('menus')
                 ->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('category_id')->references('id')->on('categories')
-                ->onUpdate('cascade')->onDelete('restrict');
             $table->timestamps();
         });
     }
@@ -31,6 +32,6 @@ class CreateMenuCategoryTable extends Migration
      */
     public function down()
     {
-         Schema::drop('menu_category');
+        Schema::drop('sections');
     }
 }

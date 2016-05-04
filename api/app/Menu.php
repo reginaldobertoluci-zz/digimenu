@@ -13,6 +13,10 @@ class Menu extends Model
      */
     protected $table = 'menus';
 
+    protected $fillable = ['name', 'qrcode'];
+
+    protected $hidden = ['qrcode', 'venue_id', 'created_at', 'updated_at'];
+
     /**
      * Get the venue that owns the menu.
      */
@@ -21,22 +25,12 @@ class Menu extends Model
         return $this->belongsTo('App\Venue');
     }
 
-     /**
-     * Get the items for the menu
-     */
-    public function items()
-    {
-        return $this->hasMany('App\Item');
-
-    }
-
-    
     /**
-     * Get the categories for the menu
+     * Get the sections for the menu
      */
-    public function categories()
+    public function sections()
     {
-        return $this->belongsToMany('App\Category', 'menu_category');
+        return $this->hasMany('App\Section');
     }
 
 }

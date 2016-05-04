@@ -4,21 +4,25 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Section extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'categories';
+    protected $table = 'sections';
+
+    protected $fillable = ['name', 'order'];
+
+    protected $hidden = ['order', 'menu_id', 'created_at', 'updated_at'];
 
     /**
-     * Get the venue that owns the category
+     * Get the menu that owns the section
      */
-    public function venue()
+    public function menu()
     {
-        return $this->belongsTo('App\Venue');
+        return $this->belongsTo('App\Menu');
     }
 
     /**

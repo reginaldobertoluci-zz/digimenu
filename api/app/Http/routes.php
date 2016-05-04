@@ -15,49 +15,57 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+/*************** ROTAS ABERTAS ********************/
+//Registra um novo usuário
+Route::post('register', 'UserController@postRegister');
+// Autentica um usuário
+Route::post('authenticate', 'JwtAuthenticateController@authenticate');
+// Retorna os dados do menu através do QRCode
+Route::get('menu/qrcode/{code}', 'MenuController@getQRCode');
 
-Route::group(['prefix' => 'admin', 'middleware' => ['ability:admin,create-roles']], function()
+/**************** ROTAS ADMINISTRATIVAS ******************/
+Route::group(['prefix' => 'admin', 'middleware' => ['ability:admin,*']], function()
 {
-	// Route to create a new role
+	// Cria uma nova função (role)
 	Route::post('role', 'JwtAuthenticateController@createRole');
+	// Cria uma nova permissão
+	Route::post('permission', 'JwtAuthenticateController@createPermission');
+	// Designa uma função a um usuário
+	Route::post('assign-role', 'JwtAuthenticateController@assignRole');
+	// Designa uma permissão a uma função (role)
+	Route::post('attach-permission', 'JwtAuthenticateController@attachPermission');
+	// Verifica as permissões de um usuário
+	Route::post('check', 'JwtAuthenticateController@checkRoles');
+	// Lista os usuários do sistema
+    Route::get('users', 'JwtAuthenticateController@index');
 	
 });
 
-Route::group(['prefix' => 'admin', 'middleware' => ['ability:admin,create-permissions']], function()
+/****************** ROTAS AUTENTICADAS *****************/
+Route::group(['prefix' => 'api', 'middleware' => ['ability:owner|admin|venue-owner,*']], function()
 {
-	// Route to create a new permission
-	Route::post('permission', 'JwtAuthenticateController@createPermission');
-});
 
-Route::group(['prefix' => 'admin', 'middleware' => ['ability:admin,assign-roles']], function()
-{
-	// Route to assign role to user
-	Route::post('assign-role', 'JwtAuthenticateController@assignRole');
+	//Inclui um novo estabelecimento
+	Route::post('venues', 'VenueController@postCreate');
+
+	//Inclui um novo menu no estabelecimento
+	Route::post('venue/{venue}/menus', 'MenuController@postCreate');	
+
+	//Inclui uma nova seção no menu
+	Route::post('venue/{venue}/menu/{menu}', 'SectionController@postCreate');	
+
+	//Inclui um novo ítem na seção
+	Route::post('venue/{venue}/menu/{menu}/section/{section}', 'ItemController@postCreate');		
+	// Lista os estabelecimentos
+	//Route::get('venues', 'VenueController@index');
+	// Retorna os dados de um estabelecimento
+	//Route::get('venue/{id}', 'VenueController@getOne');
+	// Retorna os menus
+	//Route::get('menus', 'MenuController@index');
+	// Retorna os dados de um menu
+	//Route::get('menu/{id}', 'MenuController@getOne');
 });	
 
-Route::group(['prefix' => 'admin', 'middleware' => ['ability:admin,attach-permissions']], function(){
-	// Route to attache permission to a role
-	Route::post('attach-permission', 'JwtAuthenticateController@attachPermission');
-});	
 
-Route::group(['prefix' => 'admin', 'middleware' => ['ability:admin,check-permissions']], function(){
 
-	// Route to check user permissions
-	Route::post('check', 'JwtAuthenticateController@checkRoles');
-});	
-
-// API route group that we need to protect
-Route::group(['prefix' => 'api', 'middleware' => ['ability:admin,create-users']], function()
-{
-    // Protected route
-    Route::get('users', 'JwtAuthenticateController@index');
-});
-
-// Authentication route
-Route::post('authenticate', 'JwtAuthenticateController@authenticate');
-
-Route::get('venues', 'VenueController@index');
-Route::get('venue/{id}', 'VenueController@getOne');
-Route::get('menus', 'MenuController@index');
-Route::get('menu/{id}', 'MenuController@getOne');
 

@@ -13,6 +13,8 @@ class Venue extends Model
      */
     protected $table = 'venues';
 
+    protected $fillable = ['name'];
+
     /**
      * Get the users that owns the venue
      */
@@ -30,12 +32,5 @@ class Venue extends Model
 
     }
 
-    /**
-     * Get the categories for the venue
-     */
-    public function categories()
-    {
-        return $this->hasMany('App\Category');
-
-    }
+    
 }

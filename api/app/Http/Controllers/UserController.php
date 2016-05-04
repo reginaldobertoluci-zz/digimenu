@@ -1,11 +1,10 @@
 <?php
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Validator;
-use App\Exceptions\Handler;
+use Hash;
 use App\Permission;
 use App\Role;
 use App\User;
-use App\Venue;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -14,26 +13,26 @@ use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Log;
 
-class VenueController extends Controller
+class UserController extends Controller
 {
     
-    public function postCreate(Request $request){
-        $venue = $request->all();
-        $v = Validator::make($venue, [
-              'name' => 'required|unique:venues|max:255'
+    //Cadastra um novo usuário
+    public function postRegister(Request $request){
+        $user = $request->all();
+        $v = Validator::make($user, [
+              'name' => 'required|max:255',
+              'email' => 'required|email|unique:users',
+              'password' => 'required|max:255',
         ]);
        
         if($v->passes()){
             try {
-                $venue = Venue::create($venue); 
-                // Adiciona permissão para o usuário acessar este estabelecimento
-                $user = Auth::user();
-                $user->venues()->save($venue);
-
+                $user['password'] = Hash::make($user['password']);
+                $user = User::create($user);    
                 $response = array(
                   'status' => 'ok',
-                  'message' => 'venue_created',
-                  'content' => $venue
+                  'message' => 'user_created',
+                  'content' => $user
                 );
                 return response()->json($response);
             } catch(\Exception $e){
@@ -52,23 +51,7 @@ class VenueController extends Controller
             );
             return response()->json($response);
         }
+        
     }
 
-    public function index()
-    {
-        return response()->json(['auth'=>Auth::user(), 'venues'=>Venue::all()]);
-    }
-
-    public function getOne($id)
-    {
-
-		$venue = Venue::with(['users', 'menus', 'categories'])->findOrFail($id);
-		$response = array(
-			'auth' => Auth::user(),
-			'venue' => $venue
-		);
-
-        return response()->json($response);
-    }
-    
 }    

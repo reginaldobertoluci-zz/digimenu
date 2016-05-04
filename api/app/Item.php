@@ -12,21 +12,17 @@ class Item extends Model
      *
      * @var string
      */
-    protected $table = 'menu_item';
+    protected $table = 'menu_items';
+
+    protected $fillable = ['name', 'price'];
+
+    protected $hidden = ['section_id', 'created_at', 'updated_at'];
 
     /**
-     * Get the menu that owns the item
+     * Get the section that owns the item
      */
-    public function menu()
+    public function section()
     {
-       return $this->belongsTo('App\Menu');
-    }
-
-    /**
-     * Get the category that owns the item
-     */
-    public function category()
-    {
-        return $this->belongsTo('App\Category');
+        return $this->belongsTo('App\Section');
     }
 }
