@@ -15,7 +15,7 @@ class Menu extends Model
 
     protected $fillable = ['name', 'qrcode'];
 
-    protected $hidden = ['qrcode', 'venue_id', 'created_at', 'updated_at'];
+    protected $hidden = ['venue_id', 'created_at', 'updated_at'];
 
     /**
      * Get the venue that owns the menu.
@@ -31,6 +31,11 @@ class Menu extends Model
     public function sections()
     {
         return $this->hasMany('App\Section');
+    }
+
+    public function items()
+    {
+        return $this->hasManyThrough('App\Item', 'App\Section');
     }
 
 }

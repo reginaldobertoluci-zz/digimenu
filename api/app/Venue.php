@@ -32,5 +32,10 @@ class Venue extends Model
 
     }
 
-    
+    public function sections()
+    {
+        return $this->hasManyThrough('App\Section', 'App\Menu');
+    }
+
+
 }

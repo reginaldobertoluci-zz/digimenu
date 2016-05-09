@@ -45,17 +45,26 @@ Route::group(['prefix' => 'admin', 'middleware' => ['ability:admin,*']], functio
 Route::group(['prefix' => 'api', 'middleware' => ['ability:owner|admin|venue-owner,*']], function()
 {
 
+	Route::resource('venues', 'VenueController');
+	Route::resource('venues.menus', 'MenuController');
+	Route::resource('venues.menus.sections', 'SectionController');
+	Route::resource('venues.menus.sections.items', 'ItemController');
+
+
 	//Inclui um novo estabelecimento
-	Route::post('venues', 'VenueController@postCreate');
+	//Route::post('venues', 'VenueController@postCreate');
 
 	//Inclui um novo menu no estabelecimento
-	Route::post('venue/{venue}/menus', 'MenuController@postCreate');	
+	//Route::post('venue/{venue}/menus', 'MenuController@postCreate');	
 
 	//Inclui uma nova seção no menu
-	Route::post('venue/{venue}/menu/{menu}', 'SectionController@postCreate');	
+	//Route::post('venue/{venue}/menu/{menu}', 'SectionController@postCreate');	
 
 	//Inclui um novo ítem na seção
-	Route::post('venue/{venue}/menu/{menu}/section/{section}', 'ItemController@postCreate');		
+	//Route::post('venue/{venue}/menu/{menu}/section/{section}', 'ItemController@postCreate');		
+	
+
+
 	// Lista os estabelecimentos
 	//Route::get('venues', 'VenueController@index');
 	// Retorna os dados de um estabelecimento
